@@ -213,6 +213,13 @@ def test_contours():
     assert out.array.shape == (3, 256, 256)
     assert out.array.dtype == "uint8"
     assert out.array[0, 0, 0] is numpy.ma.masked
+    # All 3 bands should be masked where input was masked
+    assert out.array[1, 0, 0] is numpy.ma.masked
+    assert out.array[2, 0, 0] is numpy.ma.masked
+    # Non-masked region should not be masked in output
+    assert out.array[0, 200, 200] is not numpy.ma.masked
+    # Verify that mask type is proper boolean mask from img.array.mask
+    assert numpy.array_equal(out.array.mask, numpy.broadcast_to(arr.mask, (3, 256, 256)))
 
 
 def test_terrarium():
